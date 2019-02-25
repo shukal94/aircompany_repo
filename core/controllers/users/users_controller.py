@@ -43,6 +43,15 @@ class UsersController(object):
         MySQLConnector.INSTANCE.execute_query('SELECT * FROM users;')
         return MySQLConnector.INSTANCE.get_results()
 
+    def read_by_id(self, id):
+        """
+        select info from 'users' table
+        :id: user's id
+        :return: selected info
+        """
+        MySQLConnector.INSTANCE.execute_query('SELECT * FROM users WHERE id = {0};'.format(id))
+        return MySQLConnector.INSTANCE.get_results()
+
     def update(self, email, phone, id):
         """
         update 'users' table with info
