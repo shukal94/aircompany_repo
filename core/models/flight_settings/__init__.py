@@ -1,4 +1,0 @@
-from aircompany_repo.flight_settings.flight import Flight
-from aircompany_repo.flight_settings.econom import EconomFlight
-from aircompany_repo.flight_settings.business import BusinessFlight
-from aircompany_repo.flight_settings.vip import VipFlight
