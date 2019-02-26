@@ -1,3 +1,0 @@
-"""
-Place here model classes
-"""
