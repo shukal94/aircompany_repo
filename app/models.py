@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -27,6 +29,8 @@ class User(UserMixin, db.Model):
     country = db.Column(db.String(64), default=None)
     state = db.Column(db.String(64), default=None)
     postal_code = db.Column(db.Integer, nullable=False)
+    about_me = db.Column(db.String(140))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'), default=None)
     tickets = db.relationship('Ticket', backref='owner', lazy='dynamic')
 
@@ -52,7 +56,7 @@ class Plane(db.Model):
 
     def __repr__(self):
         return '<Plane {} {} {}>'.format(self.manufacturer, self.model,
-                                         (self.biz_seats_num + self.econom_seats_num, self.vip_seats_num))
+                                         (self.biz_seats_num + self.econom_seats_num + self.vip_seats_num))
 
 
 class TicketType(db.Model):
