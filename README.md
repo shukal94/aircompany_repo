@@ -11,8 +11,8 @@
 * Install project depencies ``` pip install -r requirements.txt ```
 * Specify your own db creds int `aircompany.ini` file
 * If you wanna run application in DEBUG mode type ```export FLASK_DEBUG=1``` for *mac/linux* or ``` set FLASK_DEBUG=1 ``` for *Windows* (traces on pages will be avaiable)
-* Initialize db via ```flask db upgrade```
 * Specify your app name in FLASK_APP var, ```export FLASK_APP=aircompany.py``` for *mac/linux* or ``` set FLASK_APP=aircompany.py ``` for *Windows*
+* Initialize db via ```flask db init && flask db upgrade```
 * run server ```flask run```
 
 
