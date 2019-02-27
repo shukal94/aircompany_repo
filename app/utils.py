@@ -26,3 +26,6 @@ class Parameter(Enum):
     DB_PASSWORD = 'dbpassword'
     DB_HOST = 'dbhost'
     DB_NAME = 'dbname'
+    SECRET_KEY = 'secret_key'
+    SQLALCHEMY_TRACK_MODIFICATIONS = 'sqlalchemy_track_modifications'
+    USER_EMAIL_SENDER_EMAIL = 'user_mail_sender_email'
