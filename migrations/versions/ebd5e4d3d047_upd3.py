@@ -25,8 +25,8 @@ def upgrade():
                existing_type=mysql.VARCHAR(length=64),
                nullable=True)
     #op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
-    op.drop_index('ix_users__username', table_name='users')
-    op.drop_column('users', '_username')
+    # op.drop_index('ix_users__username', table_name='users')
+    # op.drop_column('users', '_username')
     # ### end Alembic commands ###
 
 
