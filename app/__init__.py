@@ -18,5 +18,5 @@ from app import routes, models, errors
 
 from app.api import bp as api_bp
 
-app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(api_bp, url_prefix='/api/v1')
 bootstrap = Bootstrap(app)
