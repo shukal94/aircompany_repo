@@ -1,9 +1,7 @@
 """upd3
-
 Revision ID: ebd5e4d3d047
 Revises: a0ddeeed01a2
 Create Date: 2019-02-26 20:10:01.868486
-
 """
 from alembic import op
 import sqlalchemy as sa
@@ -25,8 +23,8 @@ def upgrade():
                existing_type=mysql.VARCHAR(length=64),
                nullable=True)
     #op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
-    op.drop_index('ix_users__username', table_name='users')
-    op.drop_column('users', '_username')
+    # op.drop_index('ix_users__username', table_name='users')
+    # op.drop_column('users', '_username')
     # ### end Alembic commands ###
 
 
