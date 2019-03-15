@@ -6,41 +6,111 @@ from app.models import User
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField(
+        'Username',
+        validators=[
+            DataRequired()
+        ]
+    )
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired()
+        ]
+    )
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField(
+        'Username',
+        validators=[
+            DataRequired()
+        ]
+    )
+    first_name = StringField(
+        'First Name',
+        validators=[
+            DataRequired()
+        ]
+    )
+    last_name = StringField(
+        'Last Name',
+        validators=[
+            DataRequired()
+        ]
+    )
+    email = StringField(
+        'Email',
+        validators=[
+            DataRequired(),
+            Email()
+        ]
+    )
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired()
+        ]
+    )
     password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    address = StringField('Address', validators=[DataRequired()])
+        'Repeat Password',
+        validators=[
+            DataRequired(),
+            EqualTo('password')
+        ]
+    )
+    address = StringField(
+        'Address',
+        validators=[
+            DataRequired()
+        ]
+    )
     country = StringField('Country')
     state = StringField('State')
-    postal_code = IntegerField('Postal code', validators=[DataRequired()])
+    postal_code = IntegerField(
+        'Postal code',
+        validators=[
+            DataRequired()
+        ]
+    )
     submit = SubmitField('Register')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
+    @staticmethod
+    def validate_username(username):
+        user = User.query.filter_by(
+            username=username.data
+        ).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
 
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+    @staticmethod
+    def validate_email(email):
+        user = User.query.filter_by(
+            email=email.data
+        ).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
 
 class EditProfileForm(FlaskForm):
 
-    username = StringField('Username', validators=[DataRequired()])
-    about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
+    username = StringField(
+        'Username',
+        validators=[
+            DataRequired()
+        ]
+    )
+    about_me = TextAreaField(
+        'About me',
+        validators=[
+            Length(
+                min=0,
+                max=140
+            )
+        ]
+    )
     submit = SubmitField('Submit')
 
     def __init__(self, original_username, *args, **kwargs):
@@ -49,6 +119,8 @@ class EditProfileForm(FlaskForm):
 
     def validate_username(self, username):
         if username.data != self.original_username:
-            user = User.query.filter_by(username=self.username.data).first()
+            user = User.query.filter_by(
+                username=self.username.data
+            ).first()
             if user is not None:
                 raise ValidationError('Please use a different username.')
