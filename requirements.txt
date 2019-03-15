@@ -1,4 +1,9 @@
-mysql-connector
-mysql-connector-python
+flask
+flask-wtf
+wtforms
+flask-sqlalchemy
+flask-migrate
+pymysql
+flask-login
 pytest
-Flask
+flask-bootstrap
