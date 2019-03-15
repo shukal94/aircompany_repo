@@ -15,12 +15,14 @@ def get_user(id):
         }
     ]
     user_tickets = namedtuple(
-        'UserTickets', ['user',
-                        'price',
-                        'date_dep',
-                        'date_ar',
-                        'from_',
-                        'to_']
+        'UserTickets', [
+            'user',
+            'price',
+            'date_dep',
+            'date_ar',
+            'from_',
+            'to_'
+        ]
     )
     tickets_for_json = []
     for ticket in map(user_tickets._make, user.user_flights):

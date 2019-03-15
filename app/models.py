@@ -1,4 +1,6 @@
+from collections import namedtuple
 from datetime import datetime
+from functools import reduce
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -262,8 +264,28 @@ class Ticket(db.Model):
         return Ticket.query.join("ticket_types").first()
 
     @property
+    def final_price(self):
+        luggage_price = 0
+        ticket_luggages = namedtuple(
+            'Luggages', [
+                'Ticket',
+                'price',
+                'name'
+            ]
+        )
+        for luggage in map(ticket_luggages._make, self.luggages):
+            luggage_price += luggage.price
+        return self.price + luggage_price
+
+
+    @property
     def luggages(self):
-        return Ticket.query.join("luggages").all()
+        return Ticket.query.join("luggages").filter(
+            self.id == Luggage.ticket_id
+        ).add_columns(
+            Luggage.price,
+            Luggage.type.name
+        ).all()
 
     def __repr__(self):
         return '<Ticket {}>'.format(self.price)
