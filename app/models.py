@@ -1,6 +1,5 @@
 from collections import namedtuple
 from datetime import datetime
-from functools import reduce
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -126,6 +125,9 @@ class User(UserMixin, db.Model):
             self.password_hash,
             password
         )
+
+    def buy_a_ticket(self):
+        pass
 
     def __repr__(self):
         return '<User {} {} {} {}>'.format(
@@ -277,7 +279,6 @@ class Ticket(db.Model):
             luggage_price += luggage.price
         return self.price + luggage_price
 
-
     @property
     def luggages(self):
         return Ticket.query.join("luggages").filter(
@@ -360,10 +361,18 @@ class Flight(db.Model):
         backref='container',
         lazy='dynamic'
     )
+    planes = db.relationship(
+        'Plane',
+        backref='transport'
+    )
 
     @property
     def plane(self):
-        return Flight.query.join("planes").first()
+        return self.query.join("planes").filter(self.plane_id == Plane.id).first()
+
+    @property
+    def available_seats(self):
+        return self.query.join("tickets").count()
 
     def __repr__(self):
         return '<Flight {} {} {} {}>'.format(self._from, self._to, self.date_departure, self.date_arrival)

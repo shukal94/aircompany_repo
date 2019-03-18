@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ current_user.first_name }}!</h1>
+<h1>Hi, {{ current_user.first_name }}!</h1>
+<h2> Available flights: </h2>
+<p style="border-top: 1px solid black;">&nbsp;</p>
+{% for flight in flights %}
+{% include '_flight.html' %}
+<p style="border-top: 1px solid black;">&nbsp;</p>
+{% endfor %}
 {% endblock %}

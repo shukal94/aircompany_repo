@@ -1,0 +1,22 @@
+<table class="table table-hover">
+        <tr>
+            <td width="70px">
+            </td>
+            <td>
+                <p>
+        {{ flight._from }}  -  {{ flight._to }}
+    </p>
+    <p>
+        Departures at {{flight.date_departure}}
+    </p>
+    <p>
+        Arrives at {{flight.date_arrival}}
+    </p>
+    <p>
+        Seats: {{flight.available_seats}}
+    </p>
+
+    <p><a href="{{ url_for('flight', id=42) }}">Learn more</a></p>
+            </td>
+        </tr>
+</table>

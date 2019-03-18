@@ -8,14 +8,24 @@ from app import app, db
 from flask import render_template, flash, url_for, request
 
 from app.forms import LoginForm, RegistrationForm, EditProfileForm
-from app.models import User
+from app.models import User, Flight
+
+
+# TODO: tickets page
 
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    return render_template('index.html', title='Home')
+    flights = Flight.query.order_by(Flight.date_departure.desc())
+    return render_template('index.html', title='Home', flights=flights)
+
+
+@app.route('/flight/<id>')
+@login_required
+def flight(id):
+    return render_template('flight.html', title='MOCKUP')
 
 
 @app.route('/login', methods=['GET', 'POST'])
