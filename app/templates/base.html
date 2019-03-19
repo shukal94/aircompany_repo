@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block navbar %}
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" style="background-color: #FDC10D">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -17,14 +17,14 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('index') }}"><h4>AIRCOMPANY</h4></a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('login') }}"><h4>Login</h4></a></li>
                     {% else %}
-                    <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('user', username=current_user.username) }}"><h4>Profile</h4></a></li>
+                    <li><a href="{{ url_for('logout') }}"><h4>Logout</h4></a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container ">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}

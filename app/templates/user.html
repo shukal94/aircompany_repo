@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container ">
     <table>
         <tr valign="top">
             <td>
@@ -13,4 +14,5 @@
     {% if user == current_user %}
         <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
     {% endif %}
+</div>
 {% endblock %}
