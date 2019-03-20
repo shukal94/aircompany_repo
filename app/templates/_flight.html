@@ -1,24 +1,27 @@
-<div class="container ">
-<table class="table table-hover" style="background-color: 1EB0A9">
+{% block app_content %}
+<div class="container">
+<table class="table table-hover" style="background-color: #f5f5f5;">
         <tr>
             <td width="70px">
             </td>
-            <td>
-                <p>
-        {{ flight._from }}  -  {{ flight._to }}
-    </p>
+<td>
+                <div class="col-md-2">
+                    <p><span class="glyphicon glyphicon-menu-left"></span><b>{{ flight._from.upper() }}</b></p>
+                    <p><span class="glyphicon glyphicon-menu-right"></span><b>{{ flight._to.upper() }}</b></p>
+                </div>
+    <div class="col-md-6">
     <p>
         Departures at {{flight.date_departure}}
     </p>
     <p>
         Arrives at {{flight.date_arrival}}
-    </p>
+    </p></div>
     <p>
-        Seats: {{flight.available_seats}}
+        <b>Available seats: {{flight.available_seats}}</b>
     </p>
-
-    <p><a href="{{ url_for('flight', id=42) }}">Learn more</a></p>
+    <a type="button" class="btn btn-primary btn-sm" href="{{ url_for('flight', id=42) }}">Learn more</a>
             </td>
         </tr>
 </table>
 </div>
+{% endblock %}
