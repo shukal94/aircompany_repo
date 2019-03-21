@@ -1,4 +1,3 @@
-from collections import namedtuple
 from app.api import bp
 from app.models import User
 
@@ -47,7 +46,7 @@ def get_users():
 @bp.route('/users', methods=['POST'])
 def create_user():
     data = request.get_json(force=True)
-    User(
+    user = User(
         username=data["username"],
         first_name=data["first_name"],
         last_name=data["last_name"],
@@ -81,15 +80,15 @@ def create_user():
 def update_user(id):
     data = request.get_json(force=True)
     User.query.filter_by(id=id).update({User.postal_code : data["postal_code"],
-    User.username : data["username"],
-    User.first_name : data["first_name"],
-    User.last_name : data["last_name"],
-    User.address : data["address"],
-    User.state : data["state"],
-    User.country : data["country"],
-    User.email : data["email"],
-    User.about_me : data["about_me"],
-    User.role_id : data["role_id"]})
+    User.username: data["username"],
+    User.first_name: data["first_name"],
+    User.last_name: data["last_name"],
+    User.address: data["address"],
+    User.state: data["state"],
+    User.country: data["country"],
+    User.email: data["email"],
+    User.about_me: data["about_me"],
+    User.role_id: data["role_id"]})
     db.session.commit()
     user = User.query.filter_by(id=id).first()
     return jsonify(
@@ -105,6 +104,7 @@ def update_user(id):
         about_me=user.about_me,
         role_id=user.role_id
     )
+
 
 @bp.route('/users/<int:id>', methods=['DELETE'])
 def delete_user(id):

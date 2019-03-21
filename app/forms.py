@@ -111,6 +111,43 @@ class EditProfileForm(FlaskForm):
             )
         ]
     )
+    first_name = StringField(
+        'First Name',
+        validators=[
+            DataRequired()
+        ]
+    )
+    second_name = StringField(
+        'Second Name',
+        validators=[
+            DataRequired()
+        ]
+    )
+    email = StringField(
+        'Email',
+        validators=[
+            DataRequired(),
+            Email()
+        ]
+    )
+    address = StringField(
+        'Address',
+        validators=[
+            DataRequired()
+        ]
+    )
+    state = StringField(
+        'State',
+        validators=[
+            DataRequired()
+        ]
+    )
+    country = StringField(
+        'Country',
+        validators=[
+            DataRequired()
+        ]
+    )
     submit = SubmitField('Submit')
 
     def __init__(self, original_username, *args, **kwargs):
