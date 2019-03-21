@@ -48,15 +48,16 @@
         {# application content needs to be provided in the app_content block #}
         {% block app_content %}{% endblock %}
 
-
         </div>
         {% block footer %}
 
-<div id="footer">
-      <div class="container">
-        <p class="muted credit">© 2019 Copyright: <a href="{{ url_for('index') }}">NURSULTAN. All rights reserved</a>.</p>
-      </div>
-    </div>
+            <footer class="page-footer font-small special-color-dark pt-4" style="position: fixed; left: 0; bottom: 0; width: 100%; text-align: center; background-color: #f5f5f5;">
+
+                <div class="footer-copyright text-center py-3">© 2019 Copyright:
+                  <a href="{{ url_for('index') }}"> Aircompany. All rights reserved</a>
+                </div>
+
+            </footer>
             {% endblock %}
 
 

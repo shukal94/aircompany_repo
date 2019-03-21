@@ -1,4 +1,3 @@
-from collections import namedtuple
 from app.api import bp
 from app.models import User
 
@@ -14,12 +13,15 @@ def get_user(id):
         id=user.id,
         username=user.username,
         role=user.role.name,
-        flights=[{
-                    'from': flight._from,
-                    'to': flight._to,
-                    'date_departure': flight.date_departure,
-                    'date_arrival': flight.date_arrival
-                } for flight in user.assigned_flights]
+        flights=[
+            {
+                'from': flight._from,
+                'to': flight._to,
+                'date_departure': flight.date_departure,
+                'date_arrival': flight.date_arrival
+            }
+            for flight in user.assigned_flights
+        ]
     )
 
 
