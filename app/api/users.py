@@ -9,37 +9,17 @@ from app import db
 @bp.route('/users/<int:id>', methods=['GET'])
 def get_user(id):
     user = User.query.filter_by(id=id).first()
-    roles = [
-        {
-            "role": user.role.name
-        }
-    ]
-    user_tickets = namedtuple(
-        'UserTickets', [
-            'user',
-            'price',
-            'date_dep',
-            'date_ar',
-            'from_',
-            'to_'
-        ]
-    )
-    tickets_for_json = []
-    for ticket in map(user_tickets._make, user.user_flights):
-        tickets_for_json.append(
-            {
-                'from': ticket.from_,
-                'to': ticket.to_,
-                'date_of_departure': ticket.date_dep,
-                'date_of_arrival': ticket.date_ar
-            }
-        )
 
     return jsonify(
         id=user.id,
         username=user.username,
-        roles=roles,
-        tickets=tickets_for_json
+        role=user.role.name,
+        flights=[{
+                    'from': flight._from,
+                    'to': flight._to,
+                    'date_departure': flight.date_departure,
+                    'date_arrival': flight.date_arrival
+                } for flight in user.assigned_flights]
     )
 
 
