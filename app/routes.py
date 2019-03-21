@@ -18,8 +18,25 @@ from app.models import User, Flight
 @app.route('/index')
 @login_required
 def index():
-    flights = Flight.query.order_by(Flight.date_departure.desc())
-    return render_template('index.html', title='Home', flights=flights)
+    page = request.args.get('page', 1, type=int)
+    from app import db
+    flights = db.session.query(User, Flight).join("flights").paginate(page, 6, False)
+    flights_dto = list()
+    for flight_dto in flights.items:
+        flights_dto.append(flight_dto[1])
+    next_url = url_for('index', page=flights.next_num) if flights.has_next else None
+    prev_url = url_for('index', page=flights.prev_num) if flights.has_prev else None
+    return render_template('index.html', title='Home', flights=flights_dto, next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/explore')
+@login_required
+def explore():
+    page = request.args.get('page', 1, type=int)
+    flights = Flight.query.order_by(Flight.date_departure.desc()).paginate(page, 6, False)
+    next_url = url_for('explore', page=flights.next_num) if flights.has_next else None
+    prev_url = url_for('explore', page=flights.prev_num) if flights.has_prev else None
+    return render_template('explore.html', title='Explore', flights=flights.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/flight/<id>')

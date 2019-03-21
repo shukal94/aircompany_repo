@@ -3,9 +3,7 @@
 
 <div class="container ">
 {% block app_content %}
-
-    <div class="col-md-4"><h4>Nice to see u, {{ current_user.first_name }}!</h4></div>
-    <div class="col-md-4"><h4>Your flights</h4></div>
+    <div class="col-md-12"><h4>Available flights</h4></div>
     <!-- <div class="col-md-4">search</div> -->
 {% for flight in flights %}
 {% include '_flight.html' %}
@@ -17,6 +15,4 @@
     <a href="{{ next_url }}">Forward</a>
     {% endif %}
 {% endblock %}
-
 </div>
-

@@ -72,50 +72,41 @@ class User(UserMixin, db.Model):
         db.Integer,
         nullable=False
     )
+
     about_me = db.Column(db.String(140))
+
     last_seen = db.Column(
         db.DateTime,
         default=datetime.utcnow
     )
+
     role_id = db.Column(
         db.Integer(),
         db.ForeignKey(
             'roles.id',
             ondelete='CASCADE'
         ),
-        default=None
+        default=2
     )
-    tickets = db.relationship(
-        'Ticket',
-        backref='user_tickets',
-        lazy='dynamic'
-    )
+
     flights = db.relationship(
         'Flight',
         secondary='tickets',
-        backref='owner',
+        backref=db.backref('tickets_ownership', lazy='dynamic'),
         lazy='dynamic'
     )
 
     @property
     def role(self):
-        return User.query.join("roles").first()
+        return self.query.join("roles", (self.role_id == Role.id)).first()
 
     @property
-    def user_flights(self):
-        return User.query.join("tickets").join("flights")\
-            .filter(
-                self.id == Ticket.user_id,
-                Ticket.flight_id == Flight.id
-                )\
-                .add_column(Ticket.price).filter(Ticket.user_id == self.id)\
-                .add_columns(
-                    Flight.date_departure,
-                    Flight.date_arrival,
-                    Flight._from,
-                    Flight._to
-            )\
-        .filter(Ticket.flight_id == Flight.id).all()
+    def assigned_flights(self):
+        raw_set = db.session.query(User, Flight).join("flights").all()
+        flights = list()
+        for raw_entry in raw_set:
+            flights.append(raw_entry[1])
+        return flights
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -125,9 +116,6 @@ class User(UserMixin, db.Model):
             self.password_hash,
             password
         )
-
-    def buy_a_ticket(self):
-        pass
 
     def __repr__(self):
         return '<User {} {} {} {}>'.format(
@@ -369,10 +357,6 @@ class Flight(db.Model):
     @property
     def plane(self):
         return self.query.join("planes").filter(self.plane_id == Plane.id).first()
-
-    @property
-    def available_seats(self):
-        return self.query.join("tickets").count()
 
     def __repr__(self):
         return '<Flight {} {} {} {}>'.format(self._from, self._to, self.date_departure, self.date_arrival)
