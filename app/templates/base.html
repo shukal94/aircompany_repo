@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block navbar %}
-<nav class="navbar navbar-default" style="background-color: #E8D1CA;">
+<nav class="navbar-sm navbar-light" style="background-color: #E8D1CA; .navbar {min-height:30px !important;}">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -18,16 +18,16 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a class="navbar-brand" href="{{ url_for('index') }}" style="color: #3A4666;"> NURSULTAN</a></li>
-                     <li><a href="{{ url_for('explore') }}"><span class="glyphicon glyphicon-refresh"></span><p style="color: #3A4666;">EXPLORE</p></a></li>
+                    <li><a class="navbar-brand" href="{{ url_for('index') }}" style="color: #3A4666; .navbar-brand {padding-top:5px !important; padding-bottom:0 !important; height: 30px; }"> NURSULTAN</a></li>
+                     <li><a href="{{ url_for('explore') }}" style="color: #3A4666;"><span class="glyphicon glyphicon-refresh"></span> Explore</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('login') }}"><h5 style="color: #3A4666;">SIGN IN</h5></a></li>
                     {% else %}
-                    <li><a href="{{ url_for('user', username=current_user.username) }}"><span class="glyphicon glyphicon-user"></span><p style="color: #3A4666;">PROFILE</p></a></li>
-                    <li><a href="{{ url_for('logout') }}">
-                        <span class="glyphicon glyphicon-log-out"></span><p style="color: #3A4666;">LOGOUT</p></a>
+                    <li><a href="{{ url_for('user', username=current_user.username) }}" style="color: #3A4666;"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                    <li><a href="{{ url_for('logout') }}" style="color: #3A4666;">
+                        <span class="glyphicon glyphicon-log-out"></span> Logout</a>
         </li>
                     {% endif %}
                 </ul>

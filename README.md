@@ -31,6 +31,14 @@ sqlalchemy_track_modifications=False
 user_mail_sender_email=noreply@air.com
 ```
 
+## API Usage
+First, autheticate as user you want to get request, just put to command line ```http --auth <username>:<password> POST http://localhost:5000/api/v1/tokens```
+ 
+**NOTE:** generated token expires in a hour
+
+And then you can make API calls, for example ```http GET http://localhost:5000/api/v1/users     "Authorization:Bearer <token_you_got_from_>"```
+Reason: it works on linux/mac/windows
+
 ## Probable issues
 sometimes someone push several changes in db, sometimes it kind of hurt
 * when you try to ```flask db migrate -m "some change""``` (or update db after migration) alembic will say: No, I couldnt add/delete/update table field

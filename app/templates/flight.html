@@ -2,8 +2,9 @@
 
 {% block app_content %}
 <div class="container ">
-    <h1>MOCkUP</h1>
-    <p>HI JACK</p>
-    <p><a href="{{ url_for('index') }}">Back</a></p>
+        <p><a type="button" class="btn btn-default" href="{{ url_for('explore') }}">Back</a></p>
+{% for ticket in tickets %}
+{% include '_ticket.html' %}
+{% endfor %}
 </div>
 {% endblock %}

@@ -3,6 +3,7 @@
 
 <div class="container ">
 {% block app_content %}
+    <p><a type="button" class="btn btn-default" href="{{ url_for('index') }}">Back</a></p>
     <div class="col-md-12"><h4>Available flights</h4></div>
     <!-- <div class="col-md-4">search</div> -->
 {% for flight in flights %}

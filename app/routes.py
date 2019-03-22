@@ -42,7 +42,7 @@ def explore():
 @app.route('/flight/<id>')
 @login_required
 def flight(id):
-    return render_template('flight.html', title='MOCKUP')
+    return render_template('flight.html', title='MOCKUP', tickets=[1, 2, 3])
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -144,6 +144,7 @@ def edit_profile():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.before_request
 def before_request():
