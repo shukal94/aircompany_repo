@@ -145,6 +145,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:

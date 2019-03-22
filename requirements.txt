@@ -8,3 +8,5 @@ flask-login
 pytest
 flask-bootstrap
 cryptography
+flask-httpauth
+httpie
