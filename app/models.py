@@ -126,6 +126,16 @@ class User(UserMixin, db.Model):
             tickets.append(raw_entry[1])
         return tickets
 
+    @staticmethod
+    def buy_ticket(id):
+        ticket = Ticket.query.filter_by(id=id).first()
+        ticket.query.update({Ticket.user_id: current_user.id})
+
+    @staticmethod
+    def revoke_ticket(id):
+        ticket = Ticket.query.filter_by(id=id).first()
+        ticket.query.update({Ticket.user_id: None})
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
