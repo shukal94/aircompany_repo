@@ -24,6 +24,18 @@ def index():
     return render_template('index.html', title='Home', flights=flights_dto, next_url=next_url, prev_url=prev_url)
 
 
+@app.route('/ticket/<id>/buy')
+def buy_ticket(id):
+    current_user.buy_ticket(id)
+    db.session.commit()
+
+
+@app.route('/ticket/<id>/revoke')
+def revoke_ticket(id):
+    current_user.revoke_ticket(id)
+    db.session.commit()
+
+
 @app.route('/explore')
 @login_required
 def explore():
