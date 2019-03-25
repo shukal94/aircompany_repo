@@ -8,10 +8,7 @@ from app import app, db
 from flask import render_template, flash, url_for, request
 
 from app.forms import LoginForm, RegistrationForm, EditProfileForm
-from app.models import User, Flight
-
-
-# TODO: tickets page
+from app.models import User, Flight, Ticket
 
 
 @app.route('/')
@@ -20,10 +17,8 @@ from app.models import User, Flight
 def index():
     page = request.args.get('page', 1, type=int)
     from app import db
-    flights = db.session.query(User, Flight).join("flights").paginate(page, 6, False)
-    flights_dto = list()
-    for flight_dto in flights.items:
-        flights_dto.append(flight_dto[1])
+    flights = db.session.query(User, Flight).join("flights").filter(current_user.id == Ticket.user_id).paginate(page, 6, False)
+    flights_dto = [flight[1] for flight in flights.items]
     next_url = url_for('index', page=flights.next_num) if flights.has_next else None
     prev_url = url_for('index', page=flights.prev_num) if flights.has_prev else None
     return render_template('index.html', title='Home', flights=flights_dto, next_url=next_url, prev_url=prev_url)
@@ -36,13 +31,30 @@ def explore():
     flights = Flight.query.order_by(Flight.date_departure.desc()).paginate(page, 6, False)
     next_url = url_for('explore', page=flights.next_num) if flights.has_next else None
     prev_url = url_for('explore', page=flights.prev_num) if flights.has_prev else None
-    return render_template('explore.html', title='Explore', flights=flights.items, next_url=next_url, prev_url=prev_url)
+    return render_template(
+        'explore.html',
+        title='Explore',
+        flights=flights.items,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
 
-@app.route('/flight/<id>')
+@app.route('/flights/<flight_id>')
 @login_required
-def flight(id):
-    return render_template('flight.html', title='MOCKUP', tickets=[1, 2, 3])
+def flight(flight_id):
+    page = request.args.get('page', 1, type=int)
+    tickets = db.session.query(User, Ticket).join("flights").filter(flight_id == Ticket.flight_id).paginate(page, 9, False)
+    tickets_dto = [ticket[1] for ticket in tickets.items]
+    next_url = url_for('flight', id=flight_id, page=tickets.next_num) if tickets.has_next else None
+    prev_url = url_for('flight', id=flight_id, page=tickets.prev_num) if tickets.has_next else None
+    return render_template(
+        'flight.html',
+        title='Assigned Tickets',
+        tickets=tickets_dto,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
 
 @app.route('/login', methods=['GET', 'POST'])
