@@ -5,18 +5,24 @@
     <h3 class="panel-title">Ticket</h3>
   </div>
   <div class="panel-body">
-    Ticket content
+      <p>{{ ticket.type.capitalize() }}</p>
+      <p>$ {{ "%.2f" % ticket.final_price }}</p>
   </div>
-      <div class="panel-body">
-    Ticket content
-  </div>
-      <div class="panel-body">
-    Ticket content
-  </div>
-      <div class="panel-body">
-    Ticket content
-  </div>
-    <p><a type="button" class="btn btn-danger" href="{{ url_for('index') }}">Revoke ticket</a></p>
+    {% if ticket.user_id == current_user.id %}
+    <div class="panel-body" style="text-align: center;">
+        <b>Luggages</b>
+    </div>
+    <div class="container">
+        {% for luggage in ticket.luggages %}
+        <p>{{luggage.type}} -  $ {{ "%.2f" % luggage.price }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+  {% if ticket.user_id == current_user.id %}
+    <p><a type="button" class="btn-sm btn-danger" href="{{ url_for('index') }}">Revoke ticket</a></p>
+  {% else %}
+    <p><a type="button" class="btn-sm btn-info" href="{{ url_for('index') }}">Get ticket</a></p>
+  {% endif %}
 </div>
 </div>
 {% endblock %}

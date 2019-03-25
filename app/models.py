@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 
 from app import db, login
 
@@ -88,7 +88,7 @@ class User(UserMixin, db.Model):
             'roles.id',
             ondelete='CASCADE'
         ),
-        default=2
+        default=1
     )
 
     token = db.Column(
@@ -117,6 +117,14 @@ class User(UserMixin, db.Model):
         for raw_entry in raw_set:
             flights.append(raw_entry[1])
         return flights
+
+    @property
+    def assigned_tickets(self):
+        raw_set = db.session.query(User, Ticket).join("flights").all()
+        tickets = list()
+        for raw_entry in raw_set:
+            tickets.append(raw_entry[1])
+        return tickets
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -155,50 +163,6 @@ class User(UserMixin, db.Model):
         )
 
 
-class Plane(db.Model):
-    __tablename__ = 'planes'
-    id = db.Column(
-        db.Integer(),
-        primary_key=True
-    )
-    manufacturer = db.Column(
-        db.String(50),
-        nullable=False
-    )
-    model = db.Column(
-        db.String(50),
-        nullable=False
-    )
-    biz_seats_num = db.Column(
-        db.Integer(),
-        nullable=False
-    )
-    econom_seats_num = db.Column(
-        db.Integer(),
-        nullable=False
-    )
-    vip_seats_num = db.Column(
-        db.Integer(),
-        nullable=False
-    )
-    flights = db.relationship(
-        'Flight',
-        backref='transport',
-        lazy='dynamic'
-    )
-
-    @property
-    def capacity(self):
-        return self.vip_seats_num + self.econom_seats_num + self.biz_seats_num
-
-    def __repr__(self):
-        return '<Plane {} {} {}>'.format(
-            self.manufacturer,
-            self.model,
-            self.capacity
-        )
-
-
 class TicketType(db.Model):
     __tablename__ = 'ticket_types'
     id = db.Column(
@@ -211,7 +175,7 @@ class TicketType(db.Model):
     )
     tickets = db.relationship(
         'Ticket',
-        backref='type_of_ticket',
+        backref='ticket_type',
         lazy='dynamic'
     )
 
@@ -272,37 +236,40 @@ class Ticket(db.Model):
         ),
         nullable=False
     )
+
     ticket_luggages = db.relationship(
         'Luggage',
         backref='load',
         lazy='dynamic'
     )
 
+    users = db.relationship(
+        'User',
+        backref='assigned_tickets'
+    )
+
+    luggages = db.relationship(
+        'Luggage',
+        backref='assigned_luggages'
+    )
+
     @property
     def type(self):
-        return Ticket.query.join("ticket_types").first()
+        return self.query.join(TicketType).filter(
+            self.type_id == TicketType.id
+        ).add_columns(TicketType.name).first()[-1]
 
     @property
     def final_price(self):
         luggage_price = 0
-        ticket_luggages = namedtuple(
-            'Luggages', [
-                'Ticket',
-                'price',
-                'name'
-            ]
-        )
-        for luggage in map(ticket_luggages._make, self.luggages):
-            luggage_price += luggage.price
+        for single_luggage in self.luggages:
+            luggage_price += single_luggage.price
         return self.price + luggage_price
 
     @property
-    def luggages(self):
-        return Ticket.query.join("luggages").filter(
+    def assigned_luggages(self):
+        return self.query.join("luggages").filter(
             self.id == Luggage.ticket_id
-        ).add_columns(
-            Luggage.price,
-            Luggage.type.name
         ).all()
 
     def __repr__(self):
@@ -338,7 +305,9 @@ class Luggage(db.Model):
 
     @property
     def type(self):
-        return Luggage.query.join("luggage_types").first()
+        return self.query.join(LuggageType).filter(
+            self.type_id == LuggageType.id
+        ).add_columns(LuggageType.name).first()[-1]
 
     def __repr__(self):
         return '<Luggage {}>'.format(self.price)
@@ -350,13 +319,7 @@ class Flight(db.Model):
         db.Integer(),
         primary_key=True
     )
-    plane_id = db.Column(
-        db.Integer(),
-        db.ForeignKey(
-            'planes.id',
-            ondelete='CASCADE'
-        )
-    )
+
     _from = db.Column(
         db.String(50),
         nullable=False
@@ -378,14 +341,6 @@ class Flight(db.Model):
         backref='container',
         lazy='dynamic'
     )
-    planes = db.relationship(
-        'Plane',
-        backref='transport'
-    )
-
-    @property
-    def plane(self):
-        return self.query.join("planes").filter(self.plane_id == Plane.id).first()
 
     def __repr__(self):
         return '<Flight {} {} {} {}>'.format(self._from, self._to, self.date_departure, self.date_arrival)
