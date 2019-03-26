@@ -394,6 +394,10 @@ class Flight(SearchableMixin, db.Model):
         lazy='dynamic'
     )
 
+    @property
+    def active(self):
+        return datetime.now() < self.date_departure
+
     def __repr__(self):
         return '<Flight {} {} {} {}>'.format(self._from, self._to, self.date_departure, self.date_arrival)
 

@@ -9,6 +9,7 @@ from flask import render_template, flash, url_for, request, g
 
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, SearchForm
 from app.models import User, Flight, Ticket
+from app.errors.handlers import not_found_error
 
 
 @app.route('/')
@@ -57,6 +58,9 @@ def explore():
 @app.route('/flights/<flight_id>')
 @login_required
 def flight(flight_id):
+    flight = Flight.query.filter_by(id=flight_id).first()
+    if not flight.active:
+        return not_found_error(404)
     page = request.args.get('page', 1, type=int)
     tickets = db.session.query(Flight, Ticket).join("tickets").filter(flight_id == Ticket.flight_id).paginate(page, 9, False)
     tickets_dto = [ticket[1] for ticket in tickets.items]

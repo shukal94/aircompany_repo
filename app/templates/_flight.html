@@ -5,19 +5,25 @@
             <td width="70px">
             </td>
 <td>
-                <div class="col-md-2">
-                    <p><span class="glyphicon glyphicon-menu-left"></span><b>{{ flight._from.upper() }}</b></p>
-                    <p><span class="glyphicon glyphicon-menu-right"></span><b>{{ flight._to.upper() }}</b></p>
+                <div class="col-md-4">
+                    <p><b>{{ flight._from.upper() }}</b></p>
+                    <p>{{ moment(flight.date_departure).format('LLL') }}</p>
                 </div>
-    <div class="col-md-6">
-    <p>
-        Departures at {{ moment(flight.date_departure).format('LLL') }}
-    </p>
-    <p>
-        Arrives at {{ moment(flight.date_arrival).format('LLL') }}
-    </p></div>
-    <a type="button" class="btn btn-primary btn-sm" href="{{ url_for('flight', flight_id=flight.id) }}">Learn more</a>
-            </td>
+    <div class="col-md-2"><p><span class="glyphicon glyphicon-menu-right"></span></p></div>
+
+
+                <div class="col-md-4">
+                    <p><b>{{ flight._to.upper() }}</b></p>
+                    <p>{{ moment(flight.date_arrival).format('LLL') }}</p>
+                </div>
+                 <a type="button" class="btn btn-primary btn-sm" href="{{ url_for('flight', flight_id=flight.id) }}">Learn more</a>
+            <div class="col-md-2">
+            {% if not flight.active %}
+            <b>ARCHIVED  </b><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span>
+            {% else %}
+            <b>ACTIVE    </b><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span>
+            {% endif %}
+            </div>
         </tr>
 </table>
 </div>

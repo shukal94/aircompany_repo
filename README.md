@@ -48,6 +48,3 @@ sometimes someone push several changes in db, sometimes it kind of hurt
 No worries, just check attentively your migration files and running instance of db
 * the second one when alembic try to get revision hash that doesnt exists, just drop ```alembic_version``` in your db and remove ```migrations``` dir
 then ```flask db init && flask db migrate -m "again" && flask db upgrade```
-
-## Known bugs
-(critical) when user revokes a ticket, all the ticket dissapears from eplore and dash panel
