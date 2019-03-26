@@ -5,9 +5,9 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import redirect
 
 from app import app, db
-from flask import render_template, flash, url_for, request
+from flask import render_template, flash, url_for, request, g
 
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, SearchForm
 from app.models import User, Flight, Ticket
 
 
@@ -17,7 +17,7 @@ from app.models import User, Flight, Ticket
 def index():
     page = request.args.get('page', 1, type=int)
     from app import db
-    flights = db.session.query(User, Flight).join("flights").filter(current_user.id == Ticket.user_id).paginate(page, 6, False)
+    flights = db.session.query(User, Flight).join("flights").paginate(page, 6, False)
     flights_dto = [flight[1] for flight in flights.items]
     next_url = url_for('index', page=flights.next_num) if flights.has_next else None
     prev_url = url_for('index', page=flights.prev_num) if flights.has_prev else None
@@ -28,12 +28,14 @@ def index():
 def buy_ticket(id):
     current_user.buy_ticket(id)
     db.session.commit()
+    return render_template('ticket_status.html', title='Ticket was bought')
 
 
 @app.route('/ticket/<id>/revoke')
 def revoke_ticket(id):
     current_user.revoke_ticket(id)
     db.session.commit()
+    return render_template('ticket_status.html', title='Ticket was revoked')
 
 
 @app.route('/explore')
@@ -56,7 +58,7 @@ def explore():
 @login_required
 def flight(flight_id):
     page = request.args.get('page', 1, type=int)
-    tickets = db.session.query(User, Ticket).join("flights").filter(flight_id == Ticket.flight_id).paginate(page, 9, False)
+    tickets = db.session.query(Flight, Ticket).join("tickets").filter(flight_id == Ticket.flight_id).paginate(page, 9, False)
     tickets_dto = [ticket[1] for ticket in tickets.items]
     next_url = url_for('flight', id=flight_id, page=tickets.next_num) if tickets.has_next else None
     prev_url = url_for('flight', id=flight_id, page=tickets.prev_num) if tickets.has_next else None
@@ -170,8 +172,25 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('explore'))
+    page = request.args.get('page', 1, type=int)
+    flights, total = Flight.search(g.search_form.q.data, page, 6)
+
+    next_url = url_for('search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * 6 else None
+    prev_url = url_for('search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+    return render_template('search.html', title='Search', flights=flights,
+                           next_url=next_url, prev_url=prev_url)
+
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()

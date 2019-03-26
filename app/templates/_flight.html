@@ -11,10 +11,10 @@
                 </div>
     <div class="col-md-6">
     <p>
-        Departures at {{flight.date_departure}}
+        Departures at {{ moment(flight.date_departure).format('LLL') }}
     </p>
     <p>
-        Arrives at {{flight.date_arrival}}
+        Arrives at {{ moment(flight.date_arrival).format('LLL') }}
     </p></div>
     <a type="button" class="btn btn-primary btn-sm" href="{{ url_for('flight', flight_id=flight.id) }}">Learn more</a>
             </td>

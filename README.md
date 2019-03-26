@@ -9,6 +9,7 @@
 * Create your own virtual environment via ``` virtualenv dev ```
 * Activate it by ``` source dev/bin/activate ``` for *mac/linux* users, ``` dev\Scripts\activate ``` for *Windows*
 * Install project depencies ``` pip install -r requirements.txt ```
+* Specify elasticsearch url ```export ELASTICSEARCH_URL=http://localhost:9200```
 * Specify your own db creds int `aircompany.ini` file
 * If you wanna run application in DEBUG mode type ```export FLASK_DEBUG=1 / export FLASK_ENV=development``` for *mac/linux* or ``` set FLASK_DEBUG=1 / set FLASK_ENV=development``` for *Windows* (traces on pages will be avaiable)
 * Specify your app name in FLASK_APP var, ```export FLASK_APP=aircompany.py``` for *mac/linux* or ``` set FLASK_APP=aircompany.py ``` for *Windows*
@@ -29,6 +30,8 @@ dbuser=
 secret_key=youllneverguess
 sqlalchemy_track_modifications=False
 user_mail_sender_email=noreply@air.com
+elasticsearch_url=http://localhost:9200
+
 ```
 
 ## API Usage

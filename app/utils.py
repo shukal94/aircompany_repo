@@ -31,3 +31,5 @@ class Parameter(Enum):
     SECRET_KEY = 'secret_key'
     SQLALCHEMY_TRACK_MODIFICATIONS = 'sqlalchemy_track_modifications'
     USER_EMAIL_SENDER_EMAIL = 'user_mail_sender_email'
+    ELASTICSEARCH_URL = 'elasticsearch_url'
+
