@@ -10,3 +10,5 @@ flask-bootstrap
 cryptography
 flask-httpauth
 httpie
+flask-moment
+elasticsearch

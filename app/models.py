@@ -1,12 +1,57 @@
-from collections import namedtuple
 import base64
 from datetime import datetime, timedelta
 import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, current_user
+from app.search import add_to_index, remove_from_index, query_index
 
 from app import db, login
+
+
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
+
+# MODELS
 
 
 class Role(db.Model):
@@ -126,15 +171,11 @@ class User(UserMixin, db.Model):
             tickets.append(raw_entry[1])
         return tickets
 
-    @staticmethod
-    def buy_ticket(id):
-        ticket = Ticket.query.filter_by(id=id).first()
-        ticket.query.update({Ticket.user_id: current_user.id})
+    def buy_ticket(self, id):
+        Ticket.query.filter_by(id=id).update({"user_id": current_user.id})
 
-    @staticmethod
-    def revoke_ticket(id):
-        ticket = Ticket.query.filter_by(id=id).first()
-        ticket.query.update({Ticket.user_id: None})
+    def revoke_ticket(self, id):
+        Ticket.query.filter_by(id=id).update({"user_id": None})
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -323,8 +364,9 @@ class Luggage(db.Model):
         return '<Luggage {}>'.format(self.price)
 
 
-class Flight(db.Model):
+class Flight(SearchableMixin, db.Model):
     __tablename__ = 'flights'
+    __searchable__ = ['_from', '_to']
     id = db.Column(
         db.Integer(),
         primary_key=True
@@ -351,6 +393,10 @@ class Flight(db.Model):
         backref='container',
         lazy='dynamic'
     )
+
+    @property
+    def active(self):
+        return datetime.now() < self.date_departure
 
     def __repr__(self):
         return '<Flight {} {} {} {}>'.format(self._from, self._to, self.date_departure, self.date_arrival)

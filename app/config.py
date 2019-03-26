@@ -16,3 +16,4 @@ class Config(object):
         get(Parameter.SQLALCHEMY_TRACK_MODIFICATIONS)
     )
     USER_EMAIL_SENDER_EMAIL = get(Parameter.USER_EMAIL_SENDER_EMAIL)
+    ELASTICSEARCH_URL = get(Parameter.ELASTICSEARCH_URL)
