@@ -11,4 +11,4 @@ cryptography
 flask-httpauth
 httpie
 flask-moment
-elasticsearch
+

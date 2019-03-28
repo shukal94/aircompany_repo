@@ -364,9 +364,8 @@ class Luggage(db.Model):
         return '<Luggage {}>'.format(self.price)
 
 
-class Flight(SearchableMixin, db.Model):
+class Flight( db.Model):
     __tablename__ = 'flights'
-    __searchable__ = ['_from', '_to']
     id = db.Column(
         db.Integer(),
         primary_key=True
