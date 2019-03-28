@@ -17,12 +17,19 @@ from app.errors.handlers import not_found_error
 @login_required
 def index():
     page = request.args.get('page', 1, type=int)
-    from app import db
-    flights = db.session.query(User, Flight).join("flights").paginate(page, 6, False)
+    flights = db.session.query(User, Flight).join("flights").filter(current_user.id == Ticket.user_id).paginate(page, 6, False)
     flights_dto = [flight[1] for flight in flights.items]
     next_url = url_for('index', page=flights.next_num) if flights.has_next else None
     prev_url = url_for('index', page=flights.prev_num) if flights.has_prev else None
     return render_template('index.html', title='Home', flights=flights_dto, next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/admin')
+@login_required
+def admin():
+    if current_user.role_id != 2:
+        return redirect(url_for('index'))
+    return "ADMEN"
 
 
 @app.route('/ticket/<id>/buy')
