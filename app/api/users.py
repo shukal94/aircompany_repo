@@ -10,7 +10,6 @@ from app.api.auth import token_auth
 @token_auth.login_required
 def get_user(id):
     user = User.query.filter_by(id=id).first()
-
     return jsonify(
         id=user.id,
         username=user.username,

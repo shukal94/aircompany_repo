@@ -395,6 +395,14 @@ class Flight(SearchableMixin, db.Model):
     )
 
     @property
+    def assigned_tickets(self):
+        raw_set = db.session.query(Flight, Ticket).join("tickets").all()
+        tickets = list()
+        for raw_entry in raw_set:
+            tickets.append(raw_entry[1])
+        return tickets
+
+    @property
     def active(self):
         return datetime.now() < self.date_departure
 
