@@ -119,6 +119,7 @@ def update_user(id):
 @token_auth.login_required
 def delete_user(id):
     User.query.filter_by(id=id).delete()
+    db.session.commit()
     return jsonify(
         message="success"
     )
