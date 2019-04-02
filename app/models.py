@@ -319,9 +319,11 @@ class Ticket(db.Model):
 
     @property
     def assigned_luggages(self):
-        return self.query.join("luggages").filter(
-            self.id == Luggage.ticket_id
-        ).all()
+        raw_set = db.session.query(Ticket, Luggage).join("luggages").filter(Luggage.ticket_id==self.id)
+        luggages = list()
+        for raw_entry in raw_set:
+            luggages.append(raw_entry[1])
+        return luggages
 
     def __repr__(self):
         return '<Ticket {}>'.format(self.price)
